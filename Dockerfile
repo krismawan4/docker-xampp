@@ -1,6 +1,6 @@
 ARG BASE_DEBIAN=buster
 FROM debian:${BASE_DEBIAN}
-ARG XAMPP_URL
+ARG XAMPP_URL=https://sourceforge.net/projects/xampp/files/XAMPP%20Linux/8.2.4/xampp-linux-x64-8.2.4-0-installer.run?from_af=true
 LABEL maintainer="Tomas Jasek<tomsik68 (at) gmail (dot) com>"
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -17,7 +17,7 @@ RUN apt-get update --fix-missing && \
   apt-get -y install nano vim less --no-install-recommends && \
   apt-get clean
 
-RUN curl -Lo xampp-linux-installer.run $XAMPP_URL && \
+RUN curl -Lo xampp-linux-installer.run ${XAMPP_URL} && \
   chmod +x xampp-linux-installer.run && \
   bash -c './xampp-linux-installer.run' && \
   ln -sf /opt/lampp/lampp /usr/bin/lampp && \
@@ -31,7 +31,7 @@ RUN curl -Lo xampp-linux-installer.run $XAMPP_URL && \
   # Create a /www folder and a symbolic link to it in /opt/lampp/htdocs. It'll be accessible via http://localhost:[port]/www/
   # This is convenient because it doesn't interfere with xampp, phpmyadmin or other tools in /opt/lampp/htdocs
   mkdir /www && \
-  ln -s /www /opt/lampp/htdocs && \
+  ln -s /opt/lampp/htdocs /www  && \
   # SSH server
   mkdir -p /var/run/sshd && \
   # Allow root login via password
