@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+    apache:
+        image: httpd:2.4
+        ports:
+            - "4064:80"
+        volumes:
+            - ./web:/usr/local/apache2/htdocs
+            - ./apache_config:/usr/local/apache2/conf/custom
+        depends_on:
+            - php
+            - mysql
+
+    php:
+        image: php:7.2-apache
+        volumes:
+            - ./web:/var/www/html
+        depends_on:
+            - mysql
+
+    mysql:
+        image: mysql:5.7
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: yourdb
+        ports:
+            - "4065:3306" # Menambahkan port eksternal 4065 untuk MySQL
+        volumes:
+            - ./mysql:/var/lib/mysql
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - "4066:80" # Mengganti port phpMyAdmin ke 4066
+        environment:
+            PMA_HOST: mysql
+        depends_on:
+            - mysql
+
+volumes:
+    mysql:
+    web:
