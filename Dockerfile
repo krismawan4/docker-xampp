@@ -29,8 +29,9 @@ RUN curl -Lo xampp-linux-installer.run ${XAMPP_URL} && \
   mkdir /opt/lampp/apache2/conf.d && \
   echo "IncludeOptional /opt/lampp/apache2/conf.d/*.conf" >> /opt/lampp/etc/httpd.conf && \
   mkdir /www && \
-  ln -s /opt/lampp/htdocs/* /www && \
+  ln -s /opt/lampp/htdocs /www && \
   mkdir -p /var/run/sshd && \
+  chmod -R 777 /opt/lampp/htdocs && \
   sed -ri 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
 
 # Salin konfigurasi Supervisor untuk OpenSSH server
