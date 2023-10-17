@@ -1,6 +1,5 @@
 # Gunakan gambar Debian Buster sebagai dasar
-ARG BASE_DEBIAN=buster
-FROM debian:${BASE_DEBIAN}
+FROM debian:buster
 
 # Tambahkan argumen untuk URL XAMPP dan informasi pemeliharaan
 ARG XAMPP_URL=https://sourceforge.net/projects/xampp/files/XAMPP%20Linux/8.2.4/xampp-linux-x64-8.2.4-0-installer.run?from_af=true
@@ -40,11 +39,13 @@ COPY supervisord-openssh-server.conf /etc/supervisor/conf.d/supervisord-openssh-
 # Salin script startup
 COPY startup.sh /startup.sh
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Tambahkan /opt/lampp/bin ke dalam PATH
+ENV PATH="/opt/lampp/bin:${PATH}"
 
-# Atur PATH untuk mengakses Composer
-ENV PATH="/usr/local/bin:${PATH}"
+# Unduh dan instal Composer
+RUN /opt/lampp/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    /opt/lampp/bin/php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
+    /opt/lampp/bin/php -r "unlink('composer-setup.php');"
 
 # Tentukan volume
 VOLUME [ "/var/log/mysql/", "/var/log/apache2/", "/www", "/opt/lampp/apache2/conf.d/" ]
